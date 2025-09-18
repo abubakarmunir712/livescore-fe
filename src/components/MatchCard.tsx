@@ -209,6 +209,7 @@ const MatchCard: React.FC<{ match: any, onClick: any }> = ({ match, onClick }) =
                 src={match.teams.home.logo}
                 alt={match.teams.home.name}
                 className="w-8 h-8 rounded-full shadow-sm ring-2 ring-white/10"
+                loading="lazy"
               />
             </div>
             <div className="flex flex-col">
@@ -250,6 +251,7 @@ const MatchCard: React.FC<{ match: any, onClick: any }> = ({ match, onClick }) =
                 src={match.teams.away.logo}
                 alt={match.teams.away.name}
                 className="w-8 h-8 rounded-full shadow-sm ring-2 ring-white/10"
+                loading="lazy"
               />
             </div>
             <div className="flex flex-col">

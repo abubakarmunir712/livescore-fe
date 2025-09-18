@@ -24,8 +24,8 @@ export const Statistics = ({
   // Collect all unique stat types (sometimes one team may have missing values)
   const allTypes = Array.from(
     new Set([
-      ...teamA.statistics.map((s: any) => s.type),
-      ...teamB.statistics.map((s: any) => s.type),
+      ...teamA?.statistics?.map((s: any) => s.type),
+      ...teamB?.statistics?.map((s: any) => s.type),
     ])
   );
 
