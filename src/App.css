@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+
+  --color-background: #0d0d0d;
+  /* almost black */
+  --color-surface: #1a1a1a;
+  /* dark gray surface */
+  --color-accent: #ff4d4d;
+  /* light red highlight */
+  --color-accent-hover: #ff6666;
+  /* lighter red for hover */
+  --color-border: #262626;
+  /* subtle borders */
+  --color-text: #f2f2f2;
+  /* primary text (white-ish) */
+  --color-text-muted: #b3b3b3;
+  /* secondary text */
+  --color-success: #4caf50;
+  /* green for wins */
+  --color-danger: #e63946;
+  /* stronger red for alerts */
+  --color-warning: #ffcc00;
+  /* yellow for draws/warnings */
+}
+
+body {
+  @apply bg-background
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  @apply w-2;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-surface rounded-full border border-border;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-border;
+}
+
+/* firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: theme(--color-surface) theme(--color-background);
+}
