@@ -36,13 +36,13 @@ export const useMatchStore = create<MatchStore>((set) => ({
 
             if (!res.ok || data.error) {
                 console.error("Failed to fetch matches:", data);
-                set({ error: data.error ?? "Unknown error", data: null });
+                set({ error: "Failed to fetch matches" });
             } else {
                 set({ data: data.data, error: null });
             }
         } catch (err: any) {
             console.error("Failed to fetch matches:", err);
-            set({ error: err.message || "Unknown error", data: null });
+            set({ error: "Failed to fetch matches" });
         } finally {
             set({ isLoading: false });
         }

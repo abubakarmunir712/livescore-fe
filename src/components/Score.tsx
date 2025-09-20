@@ -143,23 +143,27 @@ const Score = () => {
     }
 
     if (isLoading) {
-        return (<section className="border-border border flex-3 lg:max-w-[60%] h-full w-full flex items-center justify-center min-h-[80dvh]">
+        return (<section className="flex-3 lg:max-w-[60%] border-border border flex items-center text-text max-w-full p-3 mb-4 flex-col min-h-[80dvh]">
+            <DateSelecter />
+            <FilterContainer />
             <Loading />
         </section>)
     }
     else if (error) {
-        return (<section className="text-text border-border border flex-3 lg:max-w-[60%] h-full w-full flex items-center justify-center min-h-[80dvh]">
-            <span>
+        return (<section className="flex-3 lg:max-w-[60%] border-border border flex items-center text-text max-w-full p-3 mb-4 flex-col min-h-[80dvh]">
+            <DateSelecter />
+            <FilterContainer />
+            <div className="w-full h-full flex items-center justify-center">
                 {error}
-            </span>
+            </div>
         </section>)
     }
     return (
 
         <section className="flex-3 lg:max-w-[60%] border-border border flex items-center text-text max-w-full p-3 mb-4 flex-col min-h-[80dvh]">
+            <DateSelecter />
+            <FilterContainer />
             {pageType == "home" && (<>
-                <DateSelecter />
-                <FilterContainer />
                 {
                     dataToDisplay && dataToDisplay?.slice(0, visibleCount).map((match: any, i: number, arr: any[]) => {
                         const showHeading = i === 0 || arr[i - 1].league.id !== match.league.id;

@@ -147,7 +147,7 @@ const MatchCard: React.FC<{ match: any; onClick: any }> = ({ match, onClick }) =
   )
 
   const Pill = ({ label, value }: { label: string; value: any }) => (
-    <div className="px-2 py-0.5 text-[10px] bg-gray-700 text-gray-200 rounded-full border border-gray-600">
+    <div className="md:px-2 py-0.5 px-0.5 text-[7px] md:text-[10px] bg-gray-700 text-gray-200 rounded-full border border-gray-600">
       <span className="font-medium">{label}:</span> {value}
     </div>
   )
