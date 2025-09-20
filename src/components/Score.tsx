@@ -16,9 +16,12 @@ const Score = () => {
     const { setCountries, setTeams, setLeagues } = useSearchStore()
     const { pageType, setPageType } = usePageStore()
     const { search, statusFilter, groupToggle, dateFilter } = useFilterStore()
-    const { data, isLoading, error, fetchMatches ,setIsLoading} = useMatchStore()
+    const { data, isLoading, error, fetchMatches, setIsLoading } = useMatchStore()
     const [dataToDisplay, setDataToDisplay] = useState<any>([])
     const [activeTab, setActiveTab] = useState<"events" | "statistics">("events")
+    const [visibleCount, setVisibleCount] = useState(20);
+    const batchSize = 15;
+    const delayMs = 1000;
 
     function isSameDate(d1: Date, d2: Date) {
         return (
@@ -27,6 +30,30 @@ const Score = () => {
             d1.getDate() === d2.getDate()
         );
     }
+
+
+    useEffect(() => {
+        if (dataToDisplay && visibleCount < dataToDisplay.length) {
+            const handleScroll = () => {
+                if (
+                    window.innerHeight + window.scrollY >=
+                    document.body.offsetHeight - 100
+                ) {
+                    window.removeEventListener("scroll", handleScroll);
+
+                    setTimeout(() => {
+                        setVisibleCount((prev) =>
+                            Math.min(prev + batchSize, dataToDisplay.length)
+                        );
+                        window.addEventListener("scroll", handleScroll);
+                    }, delayMs);
+                }
+            };
+
+            window.addEventListener("scroll", handleScroll);
+            return () => window.removeEventListener("scroll", handleScroll);
+        }
+    }, [visibleCount, dataToDisplay?.length]);
 
     useEffect(() => {
         if (isSameDate(dateFilter, new Date())) {
@@ -107,7 +134,8 @@ const Score = () => {
             setEvents(match.events)
         }
 
-        console.log(match.statistics)
+        console.log("Statistics", match?.statistics)
+        console.log("Events", match)
     }
 
     const onBack = () => {
@@ -133,7 +161,7 @@ const Score = () => {
                 <DateSelecter />
                 <FilterContainer />
                 {
-                    dataToDisplay && dataToDisplay.map((match: any, i: number, arr: any[]) => {
+                    dataToDisplay && dataToDisplay?.slice(0, visibleCount).map((match: any, i: number, arr: any[]) => {
                         const showHeading = i === 0 || arr[i - 1].league.id !== match.league.id;
 
                         return (
@@ -144,6 +172,7 @@ const Score = () => {
                         );
                     })
                 }
+                {dataToDisplay && (visibleCount < dataToDisplay?.length) && <Loading />}
             </>)}
 
             {pageType == "match" && (
@@ -154,7 +183,7 @@ const Score = () => {
                             <button
                                 key={tab}
                                 className={`flex-1 text-center px-4 py-2 transition-colors 
-            ${activeTab === tab
+                                ${activeTab === tab
                                         ? "font-semibold border-b-2 border-primary text-primary"
                                         : "text-muted hover:text-text"}`}
                                 onClick={() => setActiveTab(tab as "events" | "statistics")}

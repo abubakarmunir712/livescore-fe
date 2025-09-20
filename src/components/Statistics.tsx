@@ -5,7 +5,7 @@ export const Statistics = ({
   statistics: any[];
   onBack: () => void;
 }) => {
-  if (!statistics || statistics.length < 2) {
+  if (!statistics || statistics.length != 2) {
     return (
       <div className="p-4">
         <button
@@ -19,15 +19,19 @@ export const Statistics = ({
     );
   }
 
-  const [teamA, teamB] = statistics;
-
+  let teamA: any;
+  let teamB: any;
+  let allTypes: any;
+  [teamA, teamB] = Array.isArray(statistics) ? statistics : [[], []];
   // Collect all unique stat types (sometimes one team may have missing values)
-  const allTypes = Array.from(
+  allTypes = Array.from(
     new Set([
       ...teamA?.statistics?.map((s: any) => s.type),
       ...teamB?.statistics?.map((s: any) => s.type),
     ])
   );
+
+
 
   return (
     <div className="p-4 bg-surface rounded shadow">
@@ -62,7 +66,7 @@ export const Statistics = ({
 
       {/* Stats Table */}
       <div className="space-y-2">
-        {allTypes.map((type) => {
+        {allTypes && allTypes.map((type: any) => {
           const statA =
             teamA.statistics.find((s: any) => s.type === type)?.value ?? "-";
           const statB =

@@ -55,7 +55,7 @@ const DateSelecter = () => {
   }, [dateFilter, dates]);
 
   return (
-    <div className="w-full py-3 overflow-x-auto scrollbar-hide">
+    <div className="w-full overflow-x-auto scrollbar-hide min-h-fit overflow-y-hidden">
       <div className="flex gap-2">
         {dates?.map((date: Date, i: number) => {
           const isActive = date.toDateString() === dateFilter.toDateString();

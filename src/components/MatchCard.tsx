@@ -10,7 +10,7 @@ function mapToStatus(code: string): any {
   return "upcoming"
 }
 
-const MatchCard: React.FC<{ match: any, onClick: any }> = ({ match, onClick }) => {
+const MatchCard: React.FC<{ match: any; onClick: any }> = ({ match, onClick }) => {
   const status = mapToStatus(match.fixture.status.short)
   const isLive = status === "live"
 
@@ -85,7 +85,6 @@ const MatchCard: React.FC<{ match: any, onClick: any }> = ({ match, onClick }) =
       setAwayStats((prev) => ({ ...prev, streakOverall: streak }))
     }
 
-    // H2H Logic
     if (match.h2h) {
       let homeWin = 0
       let homeDraw = 0
@@ -93,24 +92,14 @@ const MatchCard: React.FC<{ match: any, onClick: any }> = ({ match, onClick }) =
 
       for (const h2h of match.h2h) {
         if (h2h.teams.home.id == match.teams.home.id) {
-          if (h2h.teams.home.winner === true) {
-            homeWin++
-          } else if (h2h.teams.home.winner === false) {
-            homeLose++
-          } else {
-            homeDraw++
-          }
+          if (h2h.teams.home.winner === true) homeWin++
+          else if (h2h.teams.home.winner === false) homeLose++
+          else homeDraw++
         }
       }
 
-      setHomeStats((prev) => ({
-        ...prev,
-        h2h: `${homeWin}W-${homeDraw}D-${homeLose}L`
-      }))
-      setAwayStats((prev) => ({
-        ...prev,
-        h2h: `${homeLose}W-${homeDraw}D-${homeWin}L`
-      }))
+      setHomeStats((prev) => ({ ...prev, h2h: `${homeWin}W-${homeDraw}D-${homeLose}L` }))
+      setAwayStats((prev) => ({ ...prev, h2h: `${homeLose}W-${homeDraw}D-${homeWin}L` }))
     }
   }, [match])
 
@@ -139,131 +128,88 @@ const MatchCard: React.FC<{ match: any, onClick: any }> = ({ match, onClick }) =
   }
 
   const renderStreak = (streak: string[]) => (
-    <div className="flex gap-1.5">
+    <div className="flex gap-1 ml-2">
       {streak
         .slice()
         .reverse()
         .map((s, idx) => (
-          <div key={idx} className="relative group">
-            <div
-              className={`w-6 h-6 flex items-center justify-center text-xs font-bold rounded-full shadow-sm transition-all duration-200 hover:scale-110 
-              ${s === "W" ? "bg-green-500 text-white ring-2 ring-green-500/20" : ""}
-              ${s === "L" ? "bg-red-500 text-white ring-2 ring-red-500/20" : ""}
-              ${s === "D" ? "bg-gray-400 text-white ring-2 ring-gray-400/20" : ""}`}
-            >
-              {s}
-            </div>
-            <div className="absolute hidden group-hover:block bg-gray-800 text-xs text-white px-2 py-1 rounded-md shadow-lg -top-9 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap">
-              {s === "W" ? "Win" : s === "L" ? "Loss" : "Draw"}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-            </div>
+          <div
+            key={idx}
+            className={`w-4 h-4 flex items-center justify-center text-[9px] font-bold rounded-full
+              ${s === "W" ? "bg-green-500 text-white" : ""}
+              ${s === "L" ? "bg-red-500 text-white" : ""}
+              ${s === "D" ? "bg-gray-400 text-white" : ""}`}
+          >
+            {s}
           </div>
         ))}
     </div>
   )
 
-  const Pill = ({ label, value, tooltip }: { label: string; value: any; tooltip: string }) => (
-    <div className="relative group">
-      <div className="px-3 py-1.5 text-xs bg-gray-700 text-gray-200 rounded-full border border-gray-600 shadow-sm hover:bg-gray-600 transition-colors duration-200">
-        <span className="font-medium text-gray-300">{label}:</span>{" "}
-        <span className="text-white font-semibold">{value}</span>
-      </div>
-      <div className="absolute hidden group-hover:block bg-gray-800 text-xs text-white px-3 py-2 rounded-md shadow-lg -top-10 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap">
-        {tooltip}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-      </div>
+  const Pill = ({ label, value }: { label: string; value: any }) => (
+    <div className="px-2 py-0.5 text-[10px] bg-gray-700 text-gray-200 rounded-full border border-gray-600">
+      <span className="font-medium">{label}:</span> {value}
     </div>
   )
 
   const renderStats = (stats: any) => (
-    <div className="flex flex-wrap gap-2 mt-3">
-      <Pill label="Pos" value={stats.position} tooltip="League Position" />
-      <Pill label="Pts" value={stats.points} tooltip="Points" />
-      <Pill label="MP" value={stats.matchesPlayed} tooltip="Matches Played" />
-      <Pill label="GD" value={stats.gd} tooltip="Goal Difference" />
-      <Pill label="H2H" value={stats.h2h} tooltip="Head-to-Head" />
-      <Pill label="Form" value={stats.streakCompetition} tooltip="Competition Record (W-D-L)" />
+    <div className="flex flex-wrap gap-1 mt-1">
+      <Pill label="Pos" value={stats.position} />
+      <Pill label="Pts" value={stats.points} />
+      <Pill label="MP" value={stats.matchesPlayed} />
+      <Pill label="GD" value={stats.gd} />
+      <Pill label="H2H" value={stats.h2h} />
+      <Pill label="Form" value={stats.streakCompetition} />
     </div>
   )
 
   return (
     <div
-      className={`bg-surface mt-3 cursor-pointer rounded-lg w-full flex flex-col px-6 py-5 shadow-sm hover:shadow-md transition-all duration-200 border-l-4
+      className={`bg-surface mt-2 cursor-pointer rounded-md w-full flex flex-col px-4 py-3 shadow-sm hover:shadow-md border-l-2
         ${isLive ? "border-l-yellow-400 bg-yellow-50/5" : "border-l-transparent hover:border-l-blue-400/50"}`}
       onClick={() => onClick()}
     >
-      {/* Match header with live indicator */}
-      {isLive && (
-        <div className="flex items-center gap-2 mb-3 pb-2 border-b border-yellow-200/20">
-          <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-          <span className="text-yellow-400 text-xs font-semibold uppercase tracking-wider">Live</span>
-        </div>
-      )}
-
-      {/* Home team */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex flex-col flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="relative">
-              <img
-                src={match.teams.home.logo}
-                alt={match.teams.home.name}
-                className="w-8 h-8 rounded-full shadow-sm ring-2 ring-white/10"
-                loading="lazy"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-text font-semibold text-base">{match.teams.home.name}</span>
-              <div className="mt-1">
-                {renderStreak(homeStats.streakOverall)}
-              </div>
-            </div>
+      {/* Top bar: live + time */}
+      <div className="flex justify-between items-center mb-2">
+        {isLive ? (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+            <span className="text-yellow-400 text-[10px] font-semibold uppercase">Live</span>
           </div>
-          {renderStats(homeStats)}
-        </div>
-
-        {/* Score section */}
-        <div className="flex flex-col items-center justify-center mx-6">
-          <div className="flex items-center gap-3 text-3xl font-bold text-text mb-1">
-            <span className={`${match.goals.home > match.goals.away ? 'text-green-500' : ''}`}>
-              {match.goals.home}
-            </span>
-            <span className="text-text-muted text-2xl">-</span>
-            <span className={`${match.goals.away > match.goals.home ? 'text-green-500' : ''}`}>
-              {match.goals.away}
-            </span>
-          </div>
-          <div
-            className={`text-sm px-3 py-1 rounded-full font-medium
-            ${isLive ? "text-yellow-400 bg-yellow-400/10 border border-yellow-400/20" : "text-text-muted bg-gray-100/10"}`}
-          >
-            {getMatchTime()}
-          </div>
-        </div>
+        ) : (
+          <span className="text-[10px] text-text-muted uppercase">Match</span>
+        )}
+        <div className="text-[11px] font-medium text-text-muted">{getMatchTime()}</div>
       </div>
 
-      {/* Away team */}
-      <div className="flex items-start">
-        <div className="flex flex-col flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="relative">
-              <img
-                src={match.teams.away.logo}
-                alt={match.teams.away.name}
-                className="w-8 h-8 rounded-full shadow-sm ring-2 ring-white/10"
-                loading="lazy"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-text font-semibold text-base">{match.teams.away.name}</span>
-              <div className="mt-1">
-                {renderStreak(awayStats.streakOverall)}
-              </div>
-            </div>
-          </div>
-          {renderStats(awayStats)}
+      {/* Home team row */}
+      <div className="flex items-start justify-between">
+        <div className="flex gap-2 items-center">
+          <img src={match.teams.home.logo} alt={match.teams.home.name} className="w-6 h-6 rounded-full" />
+          <span className="text-text text-sm font-semibold">{match.teams.home.name}</span>
+          {renderStreak(homeStats.streakOverall)}
+        </div>
+        <div className={`text-sm font-bold ${match.goals.home > match.goals.away ? "text-green-500" : "text-text"}`}>
+          {match.goals.home}
         </div>
       </div>
+      {renderStats(homeStats)}
+
+      {/* Divider */}
+      <div className="border-t border-gray-600 my-2"></div>
+
+      {/* Away team row */}
+      <div className="flex items-start justify-between">
+        <div className="flex gap-2 items-center">
+          <img src={match.teams.away.logo} alt={match.teams.away.name} className="w-6 h-6 rounded-full" />
+          <span className="text-text text-sm font-semibold">{match.teams.away.name}</span>
+          {renderStreak(awayStats.streakOverall)}
+        </div>
+        <div className={`text-sm font-bold ${match.goals.away > match.goals.home ? "text-green-500" : "text-text"}`}>
+          {match.goals.away}
+        </div>
+      </div>
+      {renderStats(awayStats)}
     </div>
   )
 }
