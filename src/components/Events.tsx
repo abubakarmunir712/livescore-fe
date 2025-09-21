@@ -1,4 +1,6 @@
 const Events = ({ events, onBack }: { events: any[]; onBack: () => void }) => {
+ 
+  
   return (
     <div className="p-4 bg-surface rounded shadow w-full h-full">
       {/* Back Button */}
@@ -11,7 +13,7 @@ const Events = ({ events, onBack }: { events: any[]; onBack: () => void }) => {
 
       {/* Events List */}
       <div className="space-y-3">
-        {events?.length === 0 ? (
+        {events==null || events?.length === 0 ? (
           <div className="text-text-muted text-sm w-full h-full flex items-center justify-center"><span>No events available</span></div>
         ) : (
           events.map((ev, idx) => (
