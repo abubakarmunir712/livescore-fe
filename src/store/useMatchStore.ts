@@ -1,50 +1,68 @@
 import { create } from "zustand";
 
 type StatusFilter = "live" | "upcoming" | "finished";
-const backend_url = import.meta.env.VITE_API_ENDPOINT
+const backend_url = import.meta.env.VITE_API_ENDPOINT;
 
 interface MatchStore {
-    data: any | null;
-    isLoading: boolean;
-    error: string | null;
-    fetchMatches: (date: Date, status: StatusFilter) => Promise<void>;
-    setIsLoading: (val: boolean) => void
+  data: any[];
+  total: number | null;
+  isLoading: boolean;
+  error: string | null;
+  fetchMatches: (
+    date: Date,
+    status: StatusFilter,
+    start: number,
+    search: string,
+    append?: boolean
+  ) => Promise<void>;
+  setIsLoading: (val: boolean) => void;
 }
 
-export const useMatchStore = create<MatchStore>((set) => ({
-    data: null,
-    isLoading: true,
-    error: null,
-    setIsLoading: (val) => set({ isLoading: val }),
+export const useMatchStore = create<MatchStore>((set, get) => ({
+  data: [],
+  total: null,
+  isLoading: true,
+  error: null,
 
-    fetchMatches: async (date: Date, status: StatusFilter) => {
-        set({ error: null });
+  setIsLoading: (val) => set({ isLoading: val }),
 
-        try {
-            const dateString = `${date.toLocaleString("sv-SE", { hour12: false }).replace(" ", "T")}Z`;
-            const timezone = date.getTimezoneOffset();
+  fetchMatches: async (
+    date: Date,
+    status: StatusFilter,
+    start: number,
+    search: string,
+    append = false
+  ) => {
+    set({ error: null });
 
-            const body = { date: dateString, timezone, status };
-            console.log("Making request")
-            const res = await fetch(`${backend_url}/football/matches`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-            });
+    try {
+      const dateString = `${date
+        .toLocaleString("sv-SE", { hour12: false })
+        .replace(" ", "T")}Z`;
+      const timezone = date.getTimezoneOffset();
 
-            const data = await res.json();
+      const body = { date: dateString, timezone, status, start, search };
+      const res = await fetch(`${backend_url}/football/matches`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
-            if (!res.ok || data.error) {
-                console.error("Failed to fetch matches:", data);
-                set({ error: "Failed to fetch matches" });
-            } else {
-                set({ data: data.data, error: null });
-            }
-        } catch (err: any) {
-            console.error("Failed to fetch matches:", err);
-            set({ error: "Failed to fetch matches" });
-        } finally {
-            set({ isLoading: false });
-        }
-    },
+      const json = await res.json();
+
+      if (!res.ok || json.error) {
+        set({ error: "Failed to fetch matches" });
+      } else {
+        set({
+          data: append ? [...(get().data || []), ...json.data] : json.data,
+          total: json.total ?? null, // ✅ keep total in Zustand
+          error: null,
+        });
+      }
+    } catch (err: any) {
+      set({ error: "Failed to fetch matches" });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));
