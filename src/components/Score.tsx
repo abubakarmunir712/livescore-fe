@@ -73,11 +73,14 @@ const Score = () => {
         const handleScroll = async () => {
             if (loadingMore || isLoading) return
             console.log(data.length, total)
-            if (total !== null && data.length >= total) return
+            if (total !== null && data.length >= total) {
+                console.log(data.length, total)
+                return
+            }
 
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
                 setLoadingMore(true)
-                await loadMatches(start + limit, true, true)
+                await loadMatches(start + limit, true, false)
                 setStart((prev) => prev + limit)
                 setLoadingMore(false)
             }
@@ -125,6 +128,16 @@ const Score = () => {
                 <DateSelecter />
                 <FilterContainer />
                 <div className="w-full h-full flex items-center justify-center">{error}</div>
+            </section>
+        )
+    }
+
+    if(!isLoading && dataToDisplay?.length == 0){
+        return (
+            <section className="flex-3 lg:max-w-[60%] border-border border flex items-center text-text max-w-full p-3 mb-4 flex-col min-h-[80dvh]">
+                <DateSelecter />
+                <FilterContainer />
+                <div className="w-full h-full flex items-center justify-center">Match not found</div>
             </section>
         )
     }
