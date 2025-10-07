@@ -74,7 +74,7 @@ const Score = () => {
         const handleScroll = async () => {
             if (loadingMore || isLoading) return
             console.log(data.length, total)
-            if (total !== null && data.length >= total) {
+            if (total !== null && start >= total) {
                 console.log(data.length, total)
                 return
             }
