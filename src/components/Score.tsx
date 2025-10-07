@@ -48,7 +48,7 @@ const Score = () => {
                 setIsLoading(false)
             }
         },
-        [dateFilter, statusFilter, search.query, fetchMatches, setIsLoading, setTeams]
+        [dateFilter, statusFilter, search.query, fetchMatches, setIsLoading, setTeams, groupToggle]
     )
 
     // --- initial + filter/date/search change ---
