@@ -10,6 +10,7 @@ import MatchCard from "./MatchCard"
 import LeagueHeading from "./LeagueHeading"
 import Events from "./Events"
 import { Statistics } from "./Statistics"
+import { AdSlot } from "./AdSpace"
 
 const Score = () => {
     const { setTeams } = useSearchStore()
@@ -64,6 +65,7 @@ const Score = () => {
         // live refresh every 60s
         const interval = setInterval(() => {
             loadMatches(0, false, false)
+            setStart(0)
         }, 60000)
 
         return () => clearInterval(interval)
@@ -146,6 +148,15 @@ const Score = () => {
                         const showHeading = i === 0 || arr[i - 1].league.id !== match.league.id
                         return (
                             <React.Fragment key={i}>
+                                {showHeading && <AdSlot id={i.toString()}
+                                    script="//www.highperformanceformat.com/64f4a081926456b280531e5e25b029ae/invoke.js"
+                                    options={{
+                                        'key': '64f4a081926456b280531e5e25b029ae',
+                                        'format': 'iframe',
+                                        'height': 90,
+                                        'width': 728,
+                                        'params': {}
+                                    }} />}
                                 {showHeading && <LeagueHeading league={match.league} />}
                                 <MatchCard match={match} onClick={() => onClickMatch(match)} />
                             </React.Fragment>
