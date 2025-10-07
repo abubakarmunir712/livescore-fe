@@ -13,6 +13,7 @@ interface MatchStore {
     status: StatusFilter,
     start: number,
     search: string,
+    toggle: boolean,
     append?: boolean
   ) => Promise<void>;
   setIsLoading: (val: boolean) => void;
@@ -31,6 +32,7 @@ export const useMatchStore = create<MatchStore>((set, get) => ({
     status: StatusFilter,
     start: number,
     search: string,
+    toggle: boolean,
     append = false
   ) => {
     set({ error: null });
@@ -41,7 +43,7 @@ export const useMatchStore = create<MatchStore>((set, get) => ({
         .replace(" ", "T")}Z`;
       const timezone = date.getTimezoneOffset();
 
-      const body = { date: dateString, timezone, status, start, search };
+      const body = { date: dateString, timezone, status, start, search, toggle };
       const res = await fetch(`${backend_url}/football/matches`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -41,6 +41,7 @@ const Score = () => {
                     statusFilter,
                     offset,
                     search.query,
+                    groupToggle,
                     append
                 )
             } finally {
@@ -92,15 +93,7 @@ const Score = () => {
 
 
     useEffect(() => {
-        if (groupToggle) {
-            const groupedData = [...data].sort(
-                (a, b) => a.league.id - b.league.id
-            );
-            setDataToDisplay(groupedData)
-        }
-        else {
-            setDataToDisplay(data)
-        }
+        setDataToDisplay(data)
     }, [data, groupToggle])
 
     const onClickMatch = (match: any) => {
@@ -132,7 +125,7 @@ const Score = () => {
         )
     }
 
-    if(!isLoading && dataToDisplay?.length == 0){
+    if (!isLoading && dataToDisplay?.length == 0) {
         return (
             <section className="flex-3 lg:max-w-[60%] border-border border flex items-center text-text max-w-full p-3 mb-4 flex-col min-h-[80dvh]">
                 <DateSelecter />
