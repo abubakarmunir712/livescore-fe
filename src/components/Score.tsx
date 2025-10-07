@@ -27,6 +27,51 @@ const Score = () => {
     const [loadingMore, setLoadingMore] = useState(false)
     const limit = 20
 
+    // Responsive ad configuration
+    const [adConfig, setAdConfig] = useState({
+        key: '',
+        script: '',
+        width: 0,
+        height: 0
+    })
+
+    // Update ad config based on window size
+    useEffect(() => {
+        const updateAdConfig = () => {
+            const width = window.innerWidth
+            
+            if (width >= 728) {
+                // Desktop: 728x90
+                setAdConfig({
+                    key: '64f4a081926456b280531e5e25b029ae',
+                    script: '//www.highperformanceformat.com/64f4a081926456b280531e5e25b029ae/invoke.js',
+                    width: 728,
+                    height: 90
+                })
+            } else if (width >= 468) {
+                // Tablet: 468x60
+                setAdConfig({
+                    key: 'a9007880b503d652e1548995b0f00b95',
+                    script: '//www.highperformanceformat.com/a9007880b503d652e1548995b0f00b95/invoke.js',
+                    width: 468,
+                    height: 60
+                })
+            } else {
+                // Mobile: 320x50
+                setAdConfig({
+                    key: 'b22aa3e75232c531a0def5fcf889c955',
+                    script: '//www.highperformanceformat.com/b22aa3e75232c531a0def5fcf889c955/invoke.js',
+                    width: 320,
+                    height: 50
+                })
+            }
+        }
+
+        updateAdConfig()
+        window.addEventListener('resize', updateAdConfig)
+        return () => window.removeEventListener('resize', updateAdConfig)
+    }, [])
+
     const isSameDate = (d1: Date, d2: Date) =>
         d1.getFullYear() === d2.getFullYear() &&
         d1.getMonth() === d2.getMonth() &&
@@ -148,15 +193,19 @@ const Score = () => {
                         const showHeading = i === 0 || arr[i - 1].league.id !== match.league.id
                         return (
                             <React.Fragment key={i}>
-                                {showHeading && <AdSlot id={i.toString()}
-                                    script="//www.highperformanceformat.com/64f4a081926456b280531e5e25b029ae/invoke.js"
-                                    options={{
-                                        'key': '64f4a081926456b280531e5e25b029ae',
-                                        'format': 'iframe',
-                                        'height': 90,
-                                        'width': 728,
-                                        'params': {}
-                                    }} />}
+                                {showHeading && (
+                                    <AdSlot 
+                                        id={i.toString()}
+                                        script={adConfig.script}
+                                        options={{
+                                            'key': adConfig.key,
+                                            'format': 'iframe',
+                                            'height': adConfig.height,
+                                            'width': adConfig.width,
+                                            'params': {}
+                                        }} 
+                                    />
+                                )}
                                 {showHeading && <LeagueHeading league={match.league} />}
                                 <MatchCard match={match} onClick={() => onClickMatch(match)} />
                             </React.Fragment>

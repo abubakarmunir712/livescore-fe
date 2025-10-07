@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 interface AdOptions {
   key: string;
@@ -15,8 +15,10 @@ interface AdSlotProps {
 }
 
 const AdSlotComponent: React.FC<AdSlotProps> = ({ id, script, options }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const container = document.getElementById(id);
+    const container = containerRef.current;
     if (!container) return;
 
     // only inject once
@@ -35,12 +37,9 @@ const AdSlotComponent: React.FC<AdSlotProps> = ({ id, script, options }) => {
     adScript.src = script;
     adScript.async = true;
     container.appendChild(adScript);
-
-    // ❌ no cleanup — keeps ad persistent
   }, []);
 
-  return <div id={id} />;
+  return <div className="mt-4" ref={containerRef} id={id} />;
 };
 
-// ✅ Prevent re-renders even if parent updates
 export const AdSlot = React.memo(AdSlotComponent, () => true);
